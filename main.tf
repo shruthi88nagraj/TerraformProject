@@ -111,7 +111,7 @@ resource "azurerm_network_interface" "tf-guide-nic" {
     name                          = "${var.prefix}ipconfig"
     subnet_id                     = "${azurerm_subnet.subnet.id}"
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = "${azurerm_public_ip.tf-guide-pip.id}"
+    public_ip_address_id          = "${azurerm_public_ip.tf-guide-pip[count.index].id}"
   }
   tags = {
     environment = "${var.rg_tag}"
@@ -180,7 +180,7 @@ resource "azurerm_virtual_machine" "site" {
       type     = "ssh"
       user     = "${var.admin_username}"
       password = "${var.admin_password}"
-      host     = "${azurerm_public_ip.tf-guide-pip.fqdn}"
+      host     = "${azurerm_public_ip.tf-guide-pip[count.index].fqdn}"
     }
   }
 
@@ -195,7 +195,7 @@ resource "azurerm_virtual_machine" "site" {
       type     = "ssh"
       user     = "${var.admin_username}"
       password = "${var.admin_password}"
-      host     = "${azurerm_public_ip.tf-guide-pip.fqdn}"
+      host     = "${azurerm_public_ip.tf-guide-pip[count.index].fqdn}"
     }
   }
 }

@@ -117,11 +117,24 @@ resource "azurerm_network_interface" "tf-guide-nic" {
     environment = "${var.rg_tag}"
   }
 }
+resource "azurerm_managed_disk" "tf-guide-md" {
+  count                   = "${var.countVm}"
+  name                    = "${var.prefix}-md"
+  location                = "${var.location}"
+  resource_group_name     = "${azurerm_resource_group.tf_azure_guide.name}"
+  storage_account_type    = "Standard_LRS"
+  create_option           = "Empty"
+  disk_size_gb            = "1"
 
+  tags = {
+    environment = "${var.rg_tag}"
+  }
+}
 # Every Azure Virtual Machine comes with a private IP address. You can also 
 # optionally add a public IP address for Internet-facing applications and 
 # demo environments like this one.
 resource "azurerm_public_ip" "tf-guide-pip" {
+  count                        = "${var.countVm}"
   name                         = "${var.prefix}-ip"
   location                     = "${var.location}"
   resource_group_name          = "${azurerm_resource_group.tf_azure_guide.name}"
@@ -134,7 +147,7 @@ resource "azurerm_public_ip" "tf-guide-pip" {
 # the demo environment. Terraform supports several different types of 
 # provisioners including Bash, Powershell and Chef.
 resource "azurerm_virtual_machine" "site" {
-   count              = "${var.countVm}"
+  count              = "${var.countVm}"
   name                = "${var.hostname}-site"
   location            = "${var.location}"
   resource_group_name = "${azurerm_resource_group.tf_azure_guide.name}"
@@ -154,15 +167,6 @@ resource "azurerm_virtual_machine" "site" {
     create_option     = "FromImage"
   }
 
-  os_profile {
-    computer_name  = "${var.hostname}"
-    admin_username = "${var.admin_username}"
-    admin_password = "${var.admin_password}"
-  }
-
-  os_profile_linux_config {
-    disable_password_authentication = false
-  }
   tags = {
     environment = "${var.rg_tag}"
   }

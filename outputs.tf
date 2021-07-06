@@ -11,9 +11,11 @@ output "_instructions" {
 }
 
 output "public_dns" {
-  value = "${azurerm_public_ip.tf-guide-pip[count.index].fqdn}"
+  count              = "${var.countVm}"
+  value = "${azurerm_public_ip.tf-guide-pip.fqdn}"
 }
 
 output "App_Server_URL" {
-  value = "http://${azurerm_public_ip.tf-guide-pip[count.index].fqdn}"
+  count              = "${var.countVm}"
+  value = "http://${azurerm_public_ip.tf-guide-pip.fqdn}"
 }

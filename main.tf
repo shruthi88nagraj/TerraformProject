@@ -134,6 +134,7 @@ resource "azurerm_public_ip" "tf-guide-pip" {
 # the demo environment. Terraform supports several different types of 
 # provisioners including Bash, Powershell and Chef.
 resource "azurerm_virtual_machine" "site" {
+   count              = "${var.countVm}"
   name                = "${var.hostname}-site"
   location            = "${var.location}"
   resource_group_name = "${azurerm_resource_group.tf_azure_guide.name}"

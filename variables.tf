@@ -7,14 +7,18 @@
 
 variable "resource_group" {
   description = "The name of your Azure Resource Group."
-  default     = "Terraform-Azure-Beginners"
+  default     = "UdacityIAC"
 }
 
 variable "prefix" {
   description = "This prefix will be included in the name of some resources."
-  default     = "tfguide"
+  default     = "UdacityProject1"
 }
 
+variable "countVm" { 
+   description = "Number of VM instances"  
+  default = "2"
+}
 variable "hostname" {
   description = "Virtual machine hostname. Used for local hostname, DNS, and storage-related names."
   default     = "speaker"

@@ -1,0 +1,39 @@
+{
+  "variables": {
+		"client_id": "{{env `ARM_CLIENT_ID`}}",
+		"client_secret": "{{env `ARM_CLIENT_SECRET`}}",
+		"subscription_id": "{{env `ARM_SUBSCRIPTION_ID`}}"
+  },
+  "builders": [{
+    "type": "azure-arm",
+
+    "client_id": "096f0acb-089a-4ae9-8f40-34ed4370fd4c",
+    "client_secret": "A9YlD-rrpN4P_58vXtvBv1zAbjzAO9vwi-",
+    "tenant_id": "4918e021-36db-426e-bc35-e064ff331608",
+    "subscription_id": "88fced02-58f5-414a-b306-f817209e9f92",
+
+    "os_type": "Linux",
+    "image_publisher": "Canonical",
+    "image_offer": "UbuntuServer",
+    "image_sku": "18.04-LTS",
+
+    "managed_image_resource_group_name": "Udacityproject1",
+    "managed_image_name": "linux_june",
+
+    "location": "West US",
+    "vm_size": "Standard_A2",
+
+    "azure_tags": {
+      "tags": "UdacityPoject1"
+    }
+  }],
+  "provisioners": [{
+    "inline": [
+        "apt-get update",
+        "apt-get upgrade -y"
+    ],
+    "inline_shebang": "/bin/sh -x",
+    "type": "shell",
+    "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E sh '{{ .Path }}'"
+  }]
+}

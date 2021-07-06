@@ -50,6 +50,10 @@ variable "storage_replication_type" {
   default     = "LRS"
 }
 
+variable "rg_tag" {
+  description = "Adding resource group tag name as Project name"
+  default = "UdacityProject1"
+}
 variable "vm_size" {
   description = "Specifies the size of the virtual machine."
   default     = "Standard_A2"

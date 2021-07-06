@@ -26,6 +26,9 @@ provider "azurerm" {
 resource "azurerm_resource_group" "tf_azure_guide" {
   name     = "${var.resource_group}"
   location = "${var.location}"
+  tags = {
+    environment = "${var.rg_tag}"
+  }
 }
 
 # The next resource is a Virtual Network. We can dynamically place it into the
@@ -39,6 +42,9 @@ resource "azurerm_virtual_network" "vnet" {
   location            = "${azurerm_resource_group.tf_azure_guide.location}"
   address_space       = ["${var.address_space}"]
   resource_group_name = "${azurerm_resource_group.tf_azure_guide.name}"
+  tags = {
+    environment = "${var.rg_tag}"
+  }
 }
 
 # Next we'll build a subnet to run our VMs in. These variables can be defined 
@@ -107,6 +113,9 @@ resource "azurerm_network_interface" "tf-guide-nic" {
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = "${azurerm_public_ip.tf-guide-pip.id}"
   }
+  tags = {
+    environment = "${var.rg_tag}"
+  }
 }
 
 # Every Azure Virtual Machine comes with a private IP address. You can also 
@@ -152,6 +161,9 @@ resource "azurerm_virtual_machine" "site" {
 
   os_profile_linux_config {
     disable_password_authentication = false
+  }
+  tags = {
+    environment = "${var.rg_tag}"
   }
 
   # It's easy to transfer files or templates using Terraform.

@@ -134,7 +134,7 @@ resource "azurerm_managed_disk" "tf-guide-md" {
 # optionally add a public IP address for Internet-facing applications and 
 # demo environments like this one.
 resource "azurerm_public_ip" "tf-guide-pip" {
-  count                        = "${var.countVm}"
+  # count                        = "${var.countVm}"
   name                         = "${var.prefix}-ip"
   location                     = "${var.location}"
   resource_group_name          = "${azurerm_resource_group.tf_azure_guide.name}"

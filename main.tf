@@ -75,28 +75,17 @@ resource "azurerm_network_security_group" "tf-guide-sg" {
   resource_group_name = "${azurerm_resource_group.tf_azure_guide.name}"
 
   security_rule {
-    name                       = "HTTP"
-    priority                   = 100
+    name                       = "DenyInternetInBound"
+    priority                   = 102
     direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
+    access                     = "deny"
+    protocol                   = "*"
     source_port_range          = "*"
-    destination_port_range     = "80"
-    source_address_prefix      = "${var.source_network}"
-    destination_address_prefix = "*"
+    destination_port_range     = "*"
+    source_address_prefix      = "Internet"
+    destination_address_prefix = "VirtualNetwork"
   }
 
-  security_rule {
-    name                       = "SSH"
-    priority                   = 101
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "22"
-    source_address_prefix      = "${var.source_network}"
-    destination_address_prefix = "*"
-  }
 }
 
 # A network interface. This is required by the azurerm_virtual_machine 
@@ -141,7 +130,48 @@ resource "azurerm_public_ip" "tf-guide-pip" {
   public_ip_address_allocation = "Dynamic"
   domain_name_label            = "${var.hostname}"
 }
+resource "azurerm_network_interface_security_group_association" "tf-guide-nis" {
+  count                          = "${var.countVm}"
+  network_interface_id =    azurerm_network_interface.tf-guide-nic.id
+  network_security_group_id      = azurerm_network_security_group.tf-guide-sg.id
+  
+}
+resource "azurerm_lb" "tf-guide-lb" {
+  count                   = "${var.countVm}"
+  name                = "${var.prefix}-lb"
+  location            = "${var.location}"
+  resource_group_name = "${azurerm_resource_group.tf_azure_guide.name}"
 
+  frontend_ip_configuration {
+    name                 = "PublicIPAddress"
+    public_ip_address_id = azurerm_public_ip.tf-guide-pip[count.index].id
+  }
+  tags = {
+    Resource = "${var.rg_tag}"
+  }
+}
+resource "azurerm_lb_backend_address_pool" "tf-guide-lbBackendpool" {
+  count                   = "${var.countVm}"
+  resource_group_name             = "${azurerm_resource_group.tf_azure_guide.name}"
+  loadbalancer_id                 = azurerm_lb.tf-guide-lb[count.index].id
+  name                            = "${var.prefix}-lbBackendpool"
+  
+}
+resource "azurerm_network_interface_backend_address_pool_association" "tf-guide-bakendpoolassoci"{
+  count                    = "${var.countVm}"
+  network_interface_id     = azurerm_network_interface.tf-guide-nic.id
+  ip_configuration_name    = "UdProConfiguration"
+  backend_address_pool_id  = azurerm_lb_backend_address_pool.tf-guide-lbBackendpool[count.index].id
+  
+}
+resource "azurerm_lb_probe" "main" {
+  count               = "${var.countVm}"
+  resource_group_name = "${azurerm_resource_group.tf_azure_guide.name}"
+  loadbalancer_id     = azurerm_lb.tf-guide-lb[count.index].id
+  name                = "${var.prefix}-lbprobe"
+  port                = "80"
+  
+}
 # And finally we build our virtual machine. This is a standard Ubuntu instance.
 # We use the shell provisioner to run a Bash script that configures Apache for 
 # the demo environment. Terraform supports several different types of 

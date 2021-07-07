@@ -144,7 +144,7 @@ resource "azurerm_lb" "tf-guide-lb" {
 
   frontend_ip_configuration {
     name                 = "PublicIPAddress"
-    public_ip_address_id = azurerm_public_ip.tf-guide-pip[count.index].id
+    public_ip_address_id = azurerm_public_ip.tf-guide-pip.id
   }
   tags = {
     Resource = "${var.rg_tag}"

@@ -21,7 +21,7 @@ variable "countVm" {
 }
 variable "hostname" {
   description = "Virtual machine hostname. Used for local hostname, DNS, and storage-related names."
-  default     = "UDVM"
+  default     = "udacity"
 }
 
 variable "location" {

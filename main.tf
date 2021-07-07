@@ -130,12 +130,12 @@ resource "azurerm_public_ip" "tf-guide-pip" {
   public_ip_address_allocation = "Dynamic"
   domain_name_label            = "${var.hostname}"
 }
-resource "azurerm_network_interface_security_group_association" "tf-guide-nis" {
-  count                          = "${var.countVm}"
-  network_interface_id =    azurerm_network_interface.tf-guide-nic.id
-  network_security_group_id      = azurerm_network_security_group.tf-guide-sg.id
+# resource "azurerm_network_interface_security_group_association" "tf-guide-nis" {
+#   count                          = "${var.countVm}"
+#   network_interface_id =    azurerm_network_interface.tf-guide-nic.id
+#   network_security_group_id      = azurerm_network_security_group.tf-guide-sg.id
   
-}
+# }
 resource "azurerm_lb" "tf-guide-lb" {
   count                   = "${var.countVm}"
   name                = "${var.prefix}-lb"

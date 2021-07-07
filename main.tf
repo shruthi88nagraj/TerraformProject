@@ -104,7 +104,7 @@ resource "azurerm_network_interface" "tf-guide-nic" {
   name                      = "${var.prefix}tf-guide-nic"
   location                  = "${var.location}"
   resource_group_name       = "${azurerm_resource_group.tf_azure_guide.name}"
-  network_security_group_id = "${azurerm_network_security_group.tf-guide-sg.id}"
+  
 
   ip_configuration {
     name                          = "${var.prefix}ipconfig"
@@ -137,8 +137,11 @@ resource "azurerm_public_ip" "tf-guide-pip" {
   name                         = "${var.prefix}-ip"
   location                     = "${var.location}"
   resource_group_name          = "${azurerm_resource_group.tf_azure_guide.name}"
-  public_ip_address_allocation = "Dynamic"
+  allocation_method            = "Dynamic"
   domain_name_label            = "${var.hostname}"
+   tags = {
+    environment = "${var.rg_tag}"
+  }
 }
 resource "azurerm_network_interface_security_group_association" "tf-guide-nis" {
   count                          = "${var.countVm}"

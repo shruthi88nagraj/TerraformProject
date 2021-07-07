@@ -166,7 +166,15 @@ resource "azurerm_virtual_machine" "site" {
     caching           = "ReadWrite"
     create_option     = "FromImage"
   }
+  os_profile {
+    computer_name  = "${var.hostname}"
+    admin_username = "${var.admin_username}"
+    admin_password = "${var.admin_password}"
+  }
 
+  os_profile_linux_config {
+    disable_password_authentication = false
+  }
   tags = {
     environment = "${var.rg_tag}"
   }

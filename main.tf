@@ -144,7 +144,6 @@ resource "azurerm_public_ip" "tf-guide-pip" {
   }
 }
 resource "azurerm_network_interface_security_group_association" "tf-guide-nis" {
-  count                          = "${var.countVm}"
   network_interface_id =    azurerm_network_interface.tf-guide-nic.id
   network_security_group_id      = azurerm_network_security_group.tf-guide-sg.id
   
@@ -171,14 +170,12 @@ resource "azurerm_lb_backend_address_pool" "tf-guide-lbBackendpool" {
   
 }
 resource "azurerm_network_interface_backend_address_pool_association" "tf-guide-bakendpoolassoci"{
-  count                    = "${var.countVm}"
   network_interface_id     = azurerm_network_interface.tf-guide-nic.id
-  ip_configuration_name    = "UdProConfiguration"
+  ip_configuration_name    = "UdacityProject1ipconfig"
   backend_address_pool_id  = azurerm_lb_backend_address_pool.tf-guide-lbBackendpool[count.index].id
   
 }
 resource "azurerm_lb_probe" "main" {
-  count               = "${var.countVm}"
   resource_group_name = "${azurerm_resource_group.tf_azure_guide.name}"
   loadbalancer_id     = azurerm_lb.tf-guide-lb[count.index].id
   name                = "${var.prefix}-lbprobe"

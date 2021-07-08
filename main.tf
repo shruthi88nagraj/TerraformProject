@@ -175,9 +175,7 @@ resource "azurerm_network_interface_backend_address_pool_association" "tf-guide-
   network_interface_id     = azurerm_network_interface.tf-guide-nic.id
   ip_configuration_name    = "UdacityProject1ipconfig"
   backend_address_pool_id  = azurerm_lb_backend_address_pool.tf-guide-lbBackendpool.id
-  tags = {
-    environment = "${var.rg_tag}"
-  }
+ 
 }
 resource "azurerm_lb_probe" "main" {
   resource_group_name = "${azurerm_resource_group.tf_azure_guide.name}"

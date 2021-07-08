@@ -95,6 +95,9 @@ resource "azurerm_network_security_group" "tf-guide-sg" {
     source_address_prefix      = "Internet"
     destination_address_prefix = "VirtualNetwork"
   }
+  tags = {
+    Resource = "${var.rg_tag}"
+  }
 
 }
 
@@ -146,7 +149,9 @@ resource "azurerm_public_ip" "tf-guide-pip" {
 resource "azurerm_network_interface_security_group_association" "tf-guide-nis" {
   network_interface_id =    azurerm_network_interface.tf-guide-nic.id
   network_security_group_id      = azurerm_network_security_group.tf-guide-sg.id
-  
+  tags = {
+    Resource = "${var.rg_tag}"
+  }
 }
 resource "azurerm_lb" "tf-guide-lb" {
   name                = "${var.prefix}-lb"
@@ -166,20 +171,26 @@ resource "azurerm_lb_backend_address_pool" "tf-guide-lbBackendpool" {
   resource_group_name             = "${azurerm_resource_group.tf_azure_guide.name}"
   loadbalancer_id                 = azurerm_lb.tf-guide-lb.id
   name                            = "${var.prefix}-lbBackendpool"
-  
+  tags = {
+    environment = "${var.rg_tag}"
+  }
 }
 resource "azurerm_network_interface_backend_address_pool_association" "tf-guide-bakendpoolassoci"{
   network_interface_id     = azurerm_network_interface.tf-guide-nic.id
   ip_configuration_name    = "UdacityProject1ipconfig"
   backend_address_pool_id  = azurerm_lb_backend_address_pool.tf-guide-lbBackendpool.id
-  
+  tags = {
+    environment = "${var.rg_tag}"
+  }
 }
 resource "azurerm_lb_probe" "main" {
   resource_group_name = "${azurerm_resource_group.tf_azure_guide.name}"
   loadbalancer_id     = azurerm_lb.tf-guide-lb.id
   name                = "${var.prefix}-lbprobe"
   port                = "80"
-  
+  tags = {
+    environment = "${var.rg_tag}"
+  }
 }
 # And finally we build our virtual machine. This is a standard Ubuntu instance.
 # We use the shell provisioner to run a Bash script that configures Apache for 

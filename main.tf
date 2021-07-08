@@ -149,7 +149,6 @@ resource "azurerm_network_interface_security_group_association" "tf-guide-nis" {
   
 }
 resource "azurerm_lb" "tf-guide-lb" {
-  count                   = "${var.countVm}"
   name                = "${var.prefix}-lb"
   location            = "${var.location}"
   resource_group_name = "${azurerm_resource_group.tf_azure_guide.name}"
@@ -163,21 +162,21 @@ resource "azurerm_lb" "tf-guide-lb" {
   }
 }
 resource "azurerm_lb_backend_address_pool" "tf-guide-lbBackendpool" {
-  count                   = "${var.countVm}"
+ 
   resource_group_name             = "${azurerm_resource_group.tf_azure_guide.name}"
-  loadbalancer_id                 = azurerm_lb.tf-guide-lb[count.index].id
+  loadbalancer_id                 = azurerm_lb.tf-guide-lb.id
   name                            = "${var.prefix}-lbBackendpool"
   
 }
 resource "azurerm_network_interface_backend_address_pool_association" "tf-guide-bakendpoolassoci"{
   network_interface_id     = azurerm_network_interface.tf-guide-nic.id
   ip_configuration_name    = "UdacityProject1ipconfig"
-  backend_address_pool_id  = azurerm_lb_backend_address_pool.tf-guide-lbBackendpool[count.index].id
+  backend_address_pool_id  = azurerm_lb_backend_address_pool.tf-guide-lbBackendpool.id
   
 }
 resource "azurerm_lb_probe" "main" {
   resource_group_name = "${azurerm_resource_group.tf_azure_guide.name}"
-  loadbalancer_id     = azurerm_lb.tf-guide-lb[count.index].id
+  loadbalancer_id     = azurerm_lb.tf-guide-lb.id
   name                = "${var.prefix}-lbprobe"
   port                = "80"
   
